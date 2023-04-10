@@ -48,7 +48,7 @@ class _NewPostDialogState extends State<NewPostDialog> {
                         decoration:
                             InputDecoration(hintText: 'Enter an image URL'),
                         validator: (value) {
-                          if (value == null) {
+                          if (value == null || value.isEmpty || value == '') {
                             return null;
                           } else if (value.length < 4) {
                             return 'Please enter a valid URL';
@@ -60,6 +60,8 @@ class _NewPostDialogState extends State<NewPostDialog> {
                           } else {
                             return null;
                           }
+
+                          return null;
                         }),
                   ),
                   SizedBox(width: 8),
