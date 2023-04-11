@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:workshoppr/new_post_dialog.dart';
 import 'package:workshoppr/post.dart';
+import 'package:workshoppr/feed_widget.dart';
 
 class FeedPage extends StatefulWidget {
-  const FeedPage({super.key, required this.title});
-  final String title;
+  const FeedPage({
+    super.key,
+  });
+  // final String title;
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -13,9 +16,6 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text('WorkShoppr'),
-        ),
         body: StreamBuilder<List<Post>>(
             stream: Post.readPosts(),
             builder: (context, snapshot) {
@@ -29,7 +29,9 @@ class _FeedPageState extends State<FeedPage> {
               }
             }),
         floatingActionButton: FloatingActionButton.extended(
-          label: Text('+ Post'),
+          label: Text('Post'),
+          icon: Icon(Icons.add),
+          backgroundColor: Color(0xff990000),
           onPressed: () {
             showDialog(
               context: context,
@@ -42,16 +44,8 @@ class _FeedPageState extends State<FeedPage> {
       );
 }
 
-Widget _getPostImage(String url) {
-  if (url == '') {
-    return Icon(Icons.person);
-  } else {
-    return Image.network(url);
-  }
-}
-
-Widget buildPost(Post post) => ListTile(
-      leading: _getPostImage(post.imageUrl),
-      title: Text(post.content),
-      subtitle: Text(post.dateTime.toString()),
-    );
+Widget buildPost(Post post) => FeedWidget(
+    userId: post.userId,
+    imageUrl: post.imageUrl,
+    content: post.content,
+    dateTime: post.dateTime.toString());
