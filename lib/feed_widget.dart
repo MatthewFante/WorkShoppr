@@ -42,7 +42,8 @@ class FeedWidget extends StatelessWidget {
     }
   }
 
-  FeedWidget({
+  const FeedWidget({
+    super.key,
     required this.userId,
     required this.imageUrl,
     required this.content,
@@ -54,13 +55,12 @@ class FeedWidget extends StatelessWidget {
     String truncatedContent =
         content.length > 140 ? '${content.substring(0, 140)}...' : content;
 
-    String userIdFixed =
-        (userId == '' || userId == null) ? 'Anonymous' : userId;
+    String userIdFixed = (userId == '') ? 'Anonymous' : userId;
 
     String dateTimeFormatted = formatDateTime(dateTime);
 
     return Container(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

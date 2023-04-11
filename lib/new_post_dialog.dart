@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:workshoppr/post.dart';
 
@@ -22,8 +23,15 @@ class _NewPostDialogState extends State<NewPostDialog> {
 
   @override
   Widget build(BuildContext context) {
+    User? getCurrentUser() {
+      final User? user = FirebaseAuth.instance.currentUser;
+      return user;
+    }
+
+    final username = getCurrentUser()?.displayName ?? 'Unknown';
+
     return AlertDialog(
-      title: Text('Post Something'),
+      title: const Text('Post Something'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -32,21 +40,21 @@ class _NewPostDialogState extends State<NewPostDialog> {
             children: [
               TextFormField(
                   controller: contentController,
-                  decoration: InputDecoration(hintText: 'Say something'),
+                  decoration: const InputDecoration(hintText: 'Say something'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter some text';
                     }
                     return null;
                   }),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                         controller: imageUrlController,
-                        decoration:
-                            InputDecoration(hintText: 'Enter an image URL'),
+                        decoration: const InputDecoration(
+                            hintText: 'Enter an image URL'),
                         validator: (value) {
                           if (value == null || value.isEmpty || value == '') {
                             return null;
@@ -60,13 +68,11 @@ class _NewPostDialogState extends State<NewPostDialog> {
                           } else {
                             return null;
                           }
-
-                          return null;
                         }),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   IconButton(
-                    icon: Icon(Icons.cloud_upload),
+                    icon: const Icon(Icons.cloud_upload),
                     onPressed: () {
                       // handle uploading image
                     },
@@ -79,19 +85,19 @@ class _NewPostDialogState extends State<NewPostDialog> {
       ),
       actions: [
         TextButton(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         ElevatedButton(
-          child: Text('Post'),
+          child: const Text('Post'),
           onPressed: () async {
             final content = contentController.text;
             final imageUrl = imageUrlController.text;
             if (_formKey.currentState!.validate()) {
               await Post.createPost(
-                  userId: '', content: content, imageUrl: imageUrl);
+                  userId: username, content: content, imageUrl: imageUrl);
               Navigator.pop(context);
               contentController.text = '';
               imageUrlController.text = '';

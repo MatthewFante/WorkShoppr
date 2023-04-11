@@ -1,19 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:workshoppr/feed_page.dart';
-import 'package:workshoppr/home_page.dart';
+import 'package:workshoppr/pages/login_page.dart';
+import 'package:workshoppr/pages/home_page.dart';
+import 'package:workshoppr/palette.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp());
+  await Firebase.initializeApp();
+  User? user = FirebaseAuth.instance.currentUser;
+  Widget startPage = LoginPage();
+  if (user != null) {
+    startPage = HomePage();
+  }
+
+  runApp(MyApp(startPage: startPage));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget startPage;
+  const MyApp({super.key, required this.startPage});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,25 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Palette.crimson,
       ),
-      home: HomePage(),
+      home: startPage,
     );
   }
-}
-
-class Palette {
-  static MaterialColor crimson = const MaterialColor(
-    0xff990000, // 100% shade
-    <int, Color>{
-      50: Color(0xffc8645f), // 10%
-      100: Color(0xffb24c3e), // 20%
-      200: Color(0xff9f4639), // 30%
-      300: Color(0xff8b402f), // 40%
-      400: Color(0xff773a25), // 50%
-      500: Color(0xff64341b), // 60%
-      600: Color(0xff502e11), // 70%
-      700: Color(0xff3d2807), // 80%
-      800: Color(0xff291f00), // 90%
-      900: Color(0xff000000), // 100%
-    },
-  );
 }

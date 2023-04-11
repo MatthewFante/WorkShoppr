@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:workshoppr/feed_page.dart';
-import 'package:workshoppr/classes_page.dart';
-import 'package:workshoppr/equipment_page.dart';
+import 'package:workshoppr/pages/feed_page.dart';
+import 'package:workshoppr/pages/classes_page.dart';
+import 'package:workshoppr/pages/equipment_page.dart';
+import 'package:workshoppr/pages/login_page.dart';
+import 'package:workshoppr/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,12 +17,20 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final List<Widget> _pages = [
     const FeedPage(),
-    ClassesPage(),
-    EquipmentPage(),
+    const ClassesPage(),
+    const EquipmentPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    User? getCurrentUser() {
+      final User? user = FirebaseAuth.instance.currentUser;
+      return user;
+    }
+
+    final email = getCurrentUser()?.email ?? 'Unknown';
+    final username = getCurrentUser()?.displayName ?? 'Unknown';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('WorkShoppr',
@@ -54,15 +65,15 @@ class _HomePageState extends State<HomePage> {
       drawer: Drawer(
         child: ListView(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 70,
-              child: const DrawerHeader(
+              child: DrawerHeader(
                 child: Text('Menu'),
               ),
             ),
             ListTile(
-              leading: Icon(Icons.newspaper),
-              title: Text('Feed'),
+              leading: const Icon(Icons.newspaper),
+              title: const Text('Feed'),
               onTap: () {
                 setState(() {
                   _currentIndex = 0;
@@ -90,6 +101,36 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
+            SizedBox(
+              height: 400,
+            ),
+            TextButton(
+                onPressed: () async {
+                  if (getCurrentUser() != null) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage(user: getCurrentUser()!)),
+                    );
+                  } else {
+                    null;
+                  }
+                },
+                child: Text(username)),
+            SizedBox(
+              width: 10,
+              child: ElevatedButton(
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                      ),
+                    );
+                  },
+                  child: Text('Sign out')),
+            )
           ],
         ),
       ),

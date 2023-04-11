@@ -25,13 +25,13 @@ class _FeedPageState extends State<FeedPage> {
                 final posts = snapshot.data!;
                 return ListView(children: posts.map(buildPost).toList());
               } else {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
             }),
         floatingActionButton: FloatingActionButton.extended(
-          label: Text('Post'),
-          icon: Icon(Icons.add),
-          backgroundColor: Color(0xff990000),
+          label: const Text('Post'),
+          icon: const Icon(Icons.add),
+          backgroundColor: const Color(0xff990000),
           onPressed: () {
             showDialog(
               context: context,
