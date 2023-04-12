@@ -28,7 +28,6 @@ class _HomePageState extends State<HomePage> {
       return user;
     }
 
-    final email = getCurrentUser()?.email ?? 'Unknown';
     final username = getCurrentUser()?.displayName ?? 'Unknown';
 
     return Scaffold(
@@ -68,8 +67,11 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 70,
               child: DrawerHeader(
-                child: Text('Menu'),
-              ),
+                  child: Text('WorkShoppr',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ))),
             ),
             ListTile(
               leading: const Icon(Icons.newspaper),

@@ -19,7 +19,7 @@ class LoginPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Firebase Authentication'),
+        title: const Text('Login'),
         // leading: IconButton(
         //   icon: Icon(Icons.arrow_back),
         //   onPressed: () {
@@ -29,53 +29,67 @@ class LoginPage extends StatelessWidget {
       ),
       body: Form(
         key: _formKey,
-        child: Column(
-          children: <Widget>[
-            TextFormField(
-              controller: _emailTextController,
-              focusNode: _focusEmail,
-              validator: (value) => Validator.validateEmail(email: value!),
-            ),
-            SizedBox(height: 8.0),
-            TextFormField(
-              controller: _passwordTextController,
-              focusNode: _focusPassword,
-              obscureText: true,
-              validator: (value) =>
-                  Validator.validatePassword(password: value!),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  User? user = await FireAuth.signInUsingEmailPassword(
-                    email: _emailTextController.text,
-                    password: _passwordTextController.text,
-                    context: context,
-                  );
-                  if (user != null) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => HomePage()),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 128.0),
+              TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Email address",
+                ),
+                controller: _emailTextController,
+                focusNode: _focusEmail,
+                validator: (value) => Validator.validateEmail(email: value!),
+              ),
+              SizedBox(height: 8.0),
+              TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Password",
+                ),
+                controller: _passwordTextController,
+                focusNode: _focusPassword,
+                obscureText: true,
+                validator: (value) =>
+                    Validator.validatePassword(password: value!),
+              ),
+              SizedBox(height: 8.0),
+              ElevatedButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    User? user = await FireAuth.signInUsingEmailPassword(
+                      email: _emailTextController.text,
+                      password: _passwordTextController.text,
+                      context: context,
                     );
+                    if (user != null) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                      );
+                    }
                   }
-                }
-              },
-              child: const Text(
-                'Sign In',
-                style: TextStyle(color: Colors.white),
+                },
+                child: const Text(
+                  'Sign In',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => RegisterPage()),
-                );
-              },
-              child: Text(
-                'Register',
-                style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+              SizedBox(height: 8.0),
+              Text("-  or  -"),
+              SizedBox(height: 8.0),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                  );
+                },
+                child: Text(
+                  'Register',
+                  style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

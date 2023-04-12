@@ -27,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Text('User Profile'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -42,47 +42,49 @@ class _ProfilePageState extends State<ProfilePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'NAME: ${_currentUser.displayName}',
+              'Name: ${_currentUser.displayName}',
               style: Theme.of(context).textTheme.bodyText1,
             ),
             SizedBox(height: 16.0),
             Text(
-              'EMAIL: ${_currentUser.email}',
+              'Email: ${_currentUser.email}',
               style: Theme.of(context).textTheme.bodyText1,
             ),
-            SizedBox(height: 16.0),
-            _currentUser.emailVerified
-                ? Text(
-                    'Email verified',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(color: Colors.green),
-                  )
-                : Text(
-                    'Email not verified',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(color: Colors.red),
-                  ),
-            ElevatedButton(
-              onPressed: () async {
-                await _currentUser.sendEmailVerification();
-              },
-              child: Text('Verify email'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Verification: ',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                _currentUser.emailVerified
+                    ? Text(
+                        'Email verified',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(color: Colors.green),
+                      )
+                    : ElevatedButton(
+                        onPressed: () async {
+                          await _currentUser.sendEmailVerification();
+                        },
+                        child: Text('Verify email'),
+                      ),
+                IconButton(
+                  icon: Icon(Icons.refresh),
+                  onPressed: () async {
+                    User? user = await FireAuth.refreshUser(_currentUser);
+                    if (user != null) {
+                      setState(() {
+                        _currentUser = user;
+                      });
+                    }
+                  },
+                ),
+              ],
             ),
-            IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () async {
-                User? user = await FireAuth.refreshUser(_currentUser);
-                if (user != null) {
-                  setState(() {
-                    _currentUser = user;
-                  });
-                }
-              },
-            ),
+            SizedBox(height: 200),
             ElevatedButton(
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
