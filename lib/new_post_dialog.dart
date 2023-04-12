@@ -32,7 +32,7 @@ class _NewPostDialogState extends State<NewPostDialog> {
   Future<String?> _showImageUploadModal(BuildContext context) async {
     return showModalBottomSheet<String>(
       context: context,
-      builder: (context) => ImageUploadModal(),
+      builder: (context) => const ImageUploadModal(),
     );
   }
 
@@ -53,23 +53,13 @@ class _NewPostDialogState extends State<NewPostDialog> {
     final username = getCurrentUser()?.displayName ?? 'Unknown';
 
     return AlertDialog(
-      title: const Text('Post Something'),
+      title: const Text('New Feed Post'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // TextFormField(
-              //     controller: contentController,
-              //     decoration: const InputDecoration(hintText: 'Say something'),
-              //     validator: (value) {
-              //       if (value == null || value.isEmpty) {
-              //         return 'Please enter some text';
-              //       }
-              //       return null;
-              //     }),
-
               TextFormField(
                 controller: contentController,
                 maxLines: 5,

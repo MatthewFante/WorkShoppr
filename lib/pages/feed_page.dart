@@ -51,19 +51,39 @@ class _FeedPageState extends State<FeedPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(post.userId),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  post.imageUrl == ''
-                      ? Container()
-                      : Image.network(post.imageUrl),
-                  const SizedBox(height: 16),
-                  Text(post.content),
-                  const SizedBox(height: 16),
-                  Text(formatDateTime(post.dateTime.toString()),
-                      style: const TextStyle(fontSize: 10)),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Icon(Icons.close),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Text(post.userId),
+                          Text(formatDateTime(post.dateTime.toString()),
+                              style: const TextStyle(fontSize: 10)),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    post.imageUrl == ''
+                        ? Container()
+                        : Image.network(post.imageUrl),
+                    const SizedBox(height: 16),
+                    Text(post.content),
+                  ],
+                ),
               ),
             );
           },
@@ -85,9 +105,3 @@ String formatDateTime(String dateTimeString) {
   String prettyDateTime = formatter.format(dateTime);
   return prettyDateTime;
 }
-
-// Widget buildPost(Post post) => FeedWidget(
-//     userId: post.userId,
-//     imageUrl: post.imageUrl,
-//     content: post.content,
-//     dateTime: post.dateTime.toString());

@@ -14,21 +14,13 @@ class FeedWidget extends StatelessWidget {
     return prettyDateTime;
   }
 
-  String _getPostImageUrl(String url) {
-    if (url == '') {
-      return 'https://via.placeholder.com/600x400.jpg?text=No+Image';
-    } else {
-      return url;
-    }
-  }
-
   Widget _getPostImage(String url) {
     return Container(
       width: 150,
       height: 150,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage(_getPostImageUrl(url)),
+          image: NetworkImage(url),
           fit: BoxFit.cover,
         ),
         borderRadius: BorderRadius.circular(10.0),
@@ -46,8 +38,12 @@ class FeedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String truncatedContent =
-        content.length > 140 ? '${content.substring(0, 140)}...' : content;
+    int allowedContentLength;
+    imageUrl != '' ? allowedContentLength = 140 : allowedContentLength = 240;
+
+    String truncatedContent = content.length > allowedContentLength
+        ? '${content.substring(0, allowedContentLength)}...'
+        : content;
 
     String userIdFixed = (userId == '') ? 'Anonymous' : userId;
 
@@ -58,7 +54,7 @@ class FeedWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _getPostImage(imageUrl),
+          imageUrl != '' ? _getPostImage(imageUrl) : Container(),
           const SizedBox(width: 10.0),
           Expanded(
             child: Padding(
