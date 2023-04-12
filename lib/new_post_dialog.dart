@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:workshoppr/post.dart';
+import 'image_upload_modal.dart';
 
 class NewPostDialog extends StatefulWidget {
   const NewPostDialog({Key? key}) : super(key: key);
@@ -13,6 +14,27 @@ class _NewPostDialogState extends State<NewPostDialog> {
   final contentController = TextEditingController();
   final imageUrlController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  String? _imageUrl;
+
+  String truncateUrl(String url) {
+    if (url.isEmpty || url == '') {
+      return 'No image selected';
+    }
+
+    if (url.length <= 40) {
+      return url;
+    }
+
+    return url.substring(0, 25) + "...";
+  }
+
+  Future<String?> _showImageUploadModal(BuildContext context) async {
+    return showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => ImageUploadModal(),
+    );
+  }
 
   @override
   void dispose() {
@@ -38,43 +60,74 @@ class _NewPostDialogState extends State<NewPostDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // TextFormField(
+              //     controller: contentController,
+              //     decoration: const InputDecoration(hintText: 'Say something'),
+              //     validator: (value) {
+              //       if (value == null || value.isEmpty) {
+              //         return 'Please enter some text';
+              //       }
+              //       return null;
+              //     }),
+
               TextFormField(
-                  controller: contentController,
-                  decoration: const InputDecoration(hintText: 'Say something'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  }),
+                controller: contentController,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  hintText: 'Say something',
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+              ),
               const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
-                    child: TextFormField(
-                        controller: imageUrlController,
-                        decoration: const InputDecoration(
-                            hintText: 'Enter an image URL'),
-                        validator: (value) {
-                          if (value == null || value.isEmpty || value == '') {
-                            return null;
-                          } else if (value.length < 4) {
-                            return 'Please enter a valid URL';
-                          } else if (value.substring(value.length - 4) ==
-                                  '.jpg' ||
-                              value.substring(value.length - 4) == '.png' ||
-                              value.substring(value.length - 4) == '.jpeg') {
-                            return null;
-                          } else {
-                            return null;
-                          }
-                        }),
+                    child: Text(truncateUrl(imageUrlController.text)),
+                    // TextFormField(
+                    //     controller: imageUrlController,
+                    //     decoration: const InputDecoration(
+                    //         hintText: 'Enter an image URL'),
+                    //     validator: (value) {
+                    //       if (value == null || value.isEmpty || value == '') {
+                    //         return null;
+                    //       } else if (value.length < 4) {
+                    //         return 'Please enter a valid URL';
+                    //       } else if (value.substring(value.length - 4) ==
+                    //               '.jpg' ||
+                    //           value.substring(value.length - 4) == '.png' ||
+                    //           value.substring(value.length - 4) == '.jpeg') {
+                    //         return null;
+                    //       } else {
+                    //         return null;
+                    //       }
+                    //     }),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.cloud_upload),
                     onPressed: () {
-                      // handle uploading image
+                      _showImageUploadModal(context).then((imageUrl) {
+                        setState(() {
+                          _imageUrl = imageUrl;
+
+                          imageUrlController.text = imageUrl ?? '';
+                        });
+                      });
                     },
                   ),
                 ],

@@ -53,7 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           name: value!,
                         ),
                         decoration: InputDecoration(
-                          hintText: "Name",
+                          hintText: "Username",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
                             borderSide: BorderSide(

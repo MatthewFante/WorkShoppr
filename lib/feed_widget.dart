@@ -14,32 +14,26 @@ class FeedWidget extends StatelessWidget {
     return prettyDateTime;
   }
 
-  Widget _getPostImage(String url) {
+  String _getPostImageUrl(String url) {
     if (url == '') {
-      return Container(
-        width: 150,
-        height: 150,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: Image.asset('assets/placeholder.png').image,
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      );
+      return 'https://via.placeholder.com/600x400.jpg?text=No+Image';
     } else {
-      return Container(
-        width: 150,
-        height: 150,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(url),
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      );
+      return url;
     }
+  }
+
+  Widget _getPostImage(String url) {
+    return Container(
+      width: 150,
+      height: 150,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(_getPostImageUrl(url)),
+          fit: BoxFit.cover,
+        ),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+    );
   }
 
   const FeedWidget({

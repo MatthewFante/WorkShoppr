@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             SizedBox(
-              height: 400,
+              height: 450,
             ),
             TextButton(
                 onPressed: () async {
@@ -119,20 +119,17 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
                 child: Text(username)),
-            SizedBox(
-              width: 10,
-              child: ElevatedButton(
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
+            TextButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
 
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ),
-                    );
-                  },
-                  child: Text('Sign out')),
-            )
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ),
+                  );
+                },
+                child: Text('Sign out')),
           ],
         ),
       ),

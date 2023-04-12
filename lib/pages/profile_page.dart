@@ -43,26 +43,26 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Text(
               'Name: ${_currentUser.displayName}',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Text(
               'Email: ${_currentUser.email}',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Verification: ',
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 _currentUser.emailVerified
                     ? Text(
                         'Email verified',
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText1!
+                            .bodyLarge!
                             .copyWith(color: Colors.green),
                       )
                     : ElevatedButton(

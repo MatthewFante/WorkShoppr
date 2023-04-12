@@ -19,13 +19,11 @@ class LoginPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
-        // leading: IconButton(
-        //   icon: Icon(Icons.arrow_back),
-        //   onPressed: () {
-        //     Navigator.pop(context);
-        //   },
-        // ),
+        title: const Text('WorkShoppr',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            )),
       ),
       body: Form(
         key: _formKey,
@@ -33,18 +31,18 @@ class LoginPage extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: <Widget>[
-              SizedBox(height: 128.0),
+              const SizedBox(height: 200.0),
               TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Email address",
+                decoration: const InputDecoration(
+                  hintText: "Email",
                 ),
                 controller: _emailTextController,
                 focusNode: _focusEmail,
                 validator: (value) => Validator.validateEmail(email: value!),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               TextFormField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Password",
                 ),
                 controller: _passwordTextController,
@@ -53,7 +51,7 @@ class LoginPage extends StatelessWidget {
                 validator: (value) =>
                     Validator.validatePassword(password: value!),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
