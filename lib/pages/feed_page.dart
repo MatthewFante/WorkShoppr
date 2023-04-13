@@ -18,17 +18,27 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: StreamBuilder<List<Post>>(
-            stream: Post.readPosts(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (snapshot.hasData) {
-                final posts = snapshot.data!;
-                return ListView(children: posts.map(buildPost).toList());
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            }),
+          stream: Post.readPosts(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData) {
+              final posts = snapshot.data!;
+              posts.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+
+              return ListView.separated(
+                itemBuilder: (context, index) => buildPost(posts[index]),
+                separatorBuilder: (context, index) => const Divider(
+                  color: Colors.grey,
+                  height: 1.0,
+                ),
+                itemCount: posts.length,
+              );
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
         floatingActionButton: FloatingActionButton.extended(
           label: const Text('Post'),
           icon: const Icon(Icons.add),
@@ -79,8 +89,12 @@ class _FeedPageState extends State<FeedPage> {
                   children: [
                     post.imageUrl == ''
                         ? Container()
-                        : Image.network(post.imageUrl),
-                    const SizedBox(height: 16),
+                        : Column(
+                            children: [
+                              Image.network(post.imageUrl),
+                              const SizedBox(height: 16),
+                            ],
+                          ),
                     Text(post.content),
                   ],
                 ),
