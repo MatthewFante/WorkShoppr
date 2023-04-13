@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:workshoppr/pages/login_page.dart';
 import 'package:workshoppr/pages/home_page.dart';
-import 'package:workshoppr/palette.dart';
+import 'package:workshoppr/assets/palette.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

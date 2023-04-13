@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:workshoppr/authentication/fire_auth.dart';
 import 'package:workshoppr/pages/home_page.dart';
 import 'package:workshoppr/pages/register_page.dart';
-import 'package:workshoppr/pages/profile_page.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});

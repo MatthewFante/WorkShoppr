@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:workshoppr/post.dart';
+import 'package:workshoppr/models/post.dart';
 import 'image_upload_modal.dart';
 
 class NewPostDialog extends StatefulWidget {
@@ -88,24 +88,6 @@ class _NewPostDialogState extends State<NewPostDialog> {
                 children: [
                   Expanded(
                     child: Text(truncateUrl(imageUrlController.text)),
-                    // TextFormField(
-                    //     controller: imageUrlController,
-                    //     decoration: const InputDecoration(
-                    //         hintText: 'Enter an image URL'),
-                    //     validator: (value) {
-                    //       if (value == null || value.isEmpty || value == '') {
-                    //         return null;
-                    //       } else if (value.length < 4) {
-                    //         return 'Please enter a valid URL';
-                    //       } else if (value.substring(value.length - 4) ==
-                    //               '.jpg' ||
-                    //           value.substring(value.length - 4) == '.png' ||
-                    //           value.substring(value.length - 4) == '.jpeg') {
-                    //         return null;
-                    //       } else {
-                    //         return null;
-                    //       }
-                    //     }),
                   ),
                   const SizedBox(width: 8),
                   IconButton(

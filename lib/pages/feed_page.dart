@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:workshoppr/new_post_dialog.dart';
-import 'package:workshoppr/post.dart';
-import 'package:workshoppr/feed_widget.dart';
+import 'package:workshoppr/widgets/new_post_dialog.dart';
+import 'package:workshoppr/models/post.dart';
+import 'package:workshoppr/widgets/feed_widget.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({

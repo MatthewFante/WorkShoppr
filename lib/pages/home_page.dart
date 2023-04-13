@@ -6,6 +6,8 @@ import 'package:workshoppr/pages/equipment_page.dart';
 import 'package:workshoppr/pages/login_page.dart';
 import 'package:workshoppr/pages/profile_page.dart';
 
+import '../widgets/new_class_dialog.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -15,6 +17,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  bool showAddClassButton = false;
+
   final List<Widget> _pages = [
     const FeedPage(),
     const ClassesPage(),
@@ -23,6 +27,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _currentIndex == 1 ? showAddClassButton = true : showAddClassButton = false;
     User? getCurrentUser() {
       final User? user = FirebaseAuth.instance.currentUser;
       return user;
@@ -32,6 +37,22 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          Visibility(
+            visible: showAddClassButton,
+            child: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const NewClassDialog();
+                  },
+                );
+              },
+              icon: const Icon(Icons.add),
+            ),
+          ),
+        ],
         title: const Text('WorkShoppr',
             style: TextStyle(
               fontSize: 30,
