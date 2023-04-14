@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const FeedPage(),
     const ClassesPage(),
-    const EquipmentPage(),
+    EquipmentPage(),
   ];
 
   @override

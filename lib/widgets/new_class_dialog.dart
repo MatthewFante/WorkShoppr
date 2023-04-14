@@ -98,7 +98,10 @@ class _NewClassDialogState extends State<NewClassDialog> {
                 children: [
                   Flexible(
                     flex: 1,
-                    child: TextField(
+                    child: TextFormField(
+                      validator: (value) => value!.isEmpty
+                          ? 'Please enter a duration in minutes'
+                          : null,
                       controller: _durationController,
                       decoration: const InputDecoration(
                         labelText: 'Duration (min)',
@@ -108,7 +111,10 @@ class _NewClassDialogState extends State<NewClassDialog> {
                   const SizedBox(width: 16.0),
                   Flexible(
                     flex: 1,
-                    child: TextField(
+                    child: TextFormField(
+                      validator: (value) => value!.isEmpty
+                          ? 'Please enter an attendee capacity'
+                          : null,
                       controller: _attendeeCapacityController,
                       decoration: const InputDecoration(
                         labelText: 'Capacity',
