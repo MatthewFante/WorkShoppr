@@ -61,7 +61,8 @@ class LoginPage extends StatelessWidget {
                     );
                     if (user != null) {
                       Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
                       );
                     }
                   }
@@ -71,16 +72,16 @@ class LoginPage extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              SizedBox(height: 8.0),
-              Text("-  or  -"),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
+              const Text("-  or  -"),
+              const SizedBox(height: 8.0),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => RegisterPage()),
                   );
                 },
-                child: Text(
+                child: const Text(
                   'Register',
                   style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                 ),

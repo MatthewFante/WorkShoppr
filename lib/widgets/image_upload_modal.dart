@@ -47,20 +47,22 @@ class _ImageUploadModalState extends State<ImageUploadModal> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Select an image to upload'),
-          SizedBox(height: 16),
+          const Text('Select an image to upload'),
+          const SizedBox(height: 16),
           IconButton(
-            icon: Icon(Icons.add_photo_alternate),
+            icon: const Icon(Icons.add_photo_alternate),
             onPressed: _pickImage,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ElevatedButton(
-            child: _isUploading ? CircularProgressIndicator() : Text('Upload'),
             onPressed: _isUploading ? null : _uploadImage,
+            child: _isUploading
+                ? const CircularProgressIndicator()
+                : const Text('Upload'),
           ),
         ],
       ),

@@ -7,7 +7,7 @@ import 'package:workshoppr/pages/login_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final User user;
-  const ProfilePage({required this.user});
+  const ProfilePage({super.key, required this.user});
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }

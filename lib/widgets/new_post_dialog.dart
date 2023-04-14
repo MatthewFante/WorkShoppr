@@ -83,7 +83,7 @@ class _NewPostDialogState extends State<NewPostDialog> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              // const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(

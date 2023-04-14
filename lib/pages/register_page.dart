@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:workshoppr/pages/profile_page.dart';
 import 'package:workshoppr/authentication/fire_auth.dart';
 import 'package:workshoppr/authentication/validator.dart';
 import 'package:workshoppr/pages/home_page.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -34,7 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Register'),
+          title: const Text('Register'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -56,13 +57,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           hintText: "Username",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.red,
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _emailTextController,
                         focusNode: _focusEmail,
@@ -73,13 +74,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           hintText: "Email",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.red,
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _passwordTextController,
                         focusNode: _focusPassword,
@@ -91,15 +92,15 @@ class _RegisterPageState extends State<RegisterPage> {
                           hintText: "Password",
                           errorBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: Colors.red,
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 32.0),
+                      const SizedBox(height: 32.0),
                       _isProcessing
-                          ? CircularProgressIndicator()
+                          ? const CircularProgressIndicator()
                           : Row(
                               children: [
                                 Expanded(
@@ -127,14 +128,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                           Navigator.of(context)
                                               .pushAndRemoveUntil(
                                             MaterialPageRoute(
-                                              builder: (context) => HomePage(),
+                                              builder: (context) =>
+                                                  const HomePage(),
                                             ),
                                             ModalRoute.withName('/'),
                                           );
                                         }
                                       }
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       'Sign up',
                                       style: TextStyle(color: Colors.white),
                                     ),

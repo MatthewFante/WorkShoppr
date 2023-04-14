@@ -45,51 +45,47 @@ class _NewClassDialogState extends State<NewClassDialog> {
                   labelText: 'Title',
                 ),
               ),
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _dateTimeController.text != ''
-                          ? formatDateTime(_dateTimeController.text)
-                          : 'Date & Time',
-                      style: const TextStyle(fontSize: 16.0),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.arrow_drop_down),
-                      onPressed: () {
-                        // Open the CupertinoDatePicker.
-                        showModalBottomSheet(
-                          isDismissible: true,
-                          context: context,
-                          builder: (BuildContext builder) {
-                            return Container(
-                              height: 250.0,
-                              child: CupertinoDatePicker(
-                                // minuteInterval: 15,
-                                initialDateTime: getNoonTomorrow(),
-                                minuteInterval: 30,
-                                onDateTimeChanged: (DateTime date) {
-                                  // Set the text field to the selected date.
-                                  _dateTimeController.text = date.toString();
-                                  setState(() {});
-                                },
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _dateTimeController.text != ''
+                        ? formatDateTime(_dateTimeController.text)
+                        : 'Date & Time',
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_drop_down),
+                    onPressed: () {
+                      // Open the CupertinoDatePicker.
+                      showModalBottomSheet(
+                        isDismissible: true,
+                        context: context,
+                        builder: (BuildContext builder) {
+                          return SizedBox(
+                            height: 250.0,
+                            child: CupertinoDatePicker(
+                              // minuteInterval: 15,
+                              initialDateTime: getNoonTomorrow(),
+                              minuteInterval: 30,
+                              onDateTimeChanged: (DateTime date) {
+                                // Set the text field to the selected date.
+                                _dateTimeController.text = date.toString();
+                                setState(() {});
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 5,
                 decoration: const InputDecoration(
-                  hintText: 'Description',
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  labelText: 'Description',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -147,6 +143,7 @@ class _NewClassDialogState extends State<NewClassDialog> {
               DocumentReference classRef =
                   FirebaseFirestore.instance.collection('classes').doc();
               classRef.set({
+                'id': classRef.id,
                 'userName': username,
                 'title': title,
                 'description': description,
@@ -175,7 +172,7 @@ String formatDateTime(String dateTimeString) {
 }
 
 DateTime getNoonTomorrow() {
-  DateTime tomorrow = DateTime.now().add(Duration(days: 1));
+  DateTime tomorrow = DateTime.now().add(const Duration(days: 1));
   DateTime tomorrowAtNoon =
       DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 12, 0);
 

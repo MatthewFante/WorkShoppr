@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:workshoppr/pages/feed_page.dart';
@@ -18,6 +19,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   bool showAddClassButton = false;
+  bool showAddReservationButton = false;
+
+  List<String> admins = [];
+
+  Future<void> getAdmins() async {
+    final CollectionReference<Map<String, dynamic>> collectionReference =
+        FirebaseFirestore.instance.collection('admins');
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot =
+        await collectionReference.get();
+    final List<String> ids = snapshot.docs.map((doc) => doc.id).toList();
+    admins = ids;
+  }
 
   final List<Widget> _pages = [
     const FeedPage(),
@@ -27,13 +41,28 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _currentIndex == 1 ? showAddClassButton = true : showAddClassButton = false;
     User? getCurrentUser() {
       final User? user = FirebaseAuth.instance.currentUser;
       return user;
     }
 
-    final username = getCurrentUser()?.displayName ?? 'Unknown';
+    final currentUserName = getCurrentUser()?.displayName ?? 'Unknown';
+    final currentUserId = getCurrentUser()?.uid ?? 'Unknown';
+
+    bool userIsAdmin(String uid) {
+      getAdmins();
+      return admins.contains(uid);
+    }
+
+    bool adminView = userIsAdmin(currentUserId);
+
+    _currentIndex == 1 && adminView
+        ? showAddClassButton = true
+        : showAddClassButton = false;
+
+    _currentIndex == 2
+        ? showAddReservationButton = true
+        : showAddReservationButton = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -139,14 +168,14 @@ class _HomePageState extends State<HomePage> {
                     null;
                   }
                 },
-                child: Text(username)),
+                child: Text(currentUserName)),
             TextButton(
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
 
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => LoginPage(),
+                      builder: (context) => const LoginPage(),
                     ),
                   );
                 },

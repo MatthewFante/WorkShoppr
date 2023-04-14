@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:workshoppr/widgets/new_class_dialog.dart';
 import 'package:workshoppr/models/class.dart';
 import 'package:workshoppr/widgets/classes_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ClassesPage extends StatefulWidget {
   const ClassesPage({
@@ -16,6 +16,11 @@ class ClassesPage extends StatefulWidget {
 
 class _ClassesPageState extends State<ClassesPage> {
   @override
+  User? getCurrentUser() {
+    final User? user = FirebaseAuth.instance.currentUser;
+    return user;
+  }
+
   Widget build(BuildContext context) => Scaffold(
         body: StreamBuilder<List<Class>>(
           stream: Class.readClasses(),
@@ -44,22 +49,11 @@ class _ClassesPageState extends State<ClassesPage> {
             }
           },
         ),
-        // floatingActionButton: FloatingActionButton.extended(
-        //   label: const Text('Class'),
-        //   icon: const Icon(Icons.add),
-        //   backgroundColor: const Color(0xff990000),
-        //   onPressed: () {
-        //     showDialog(
-        //       context: context,
-        //       builder: (BuildContext context) {
-        //         return const NewClassDialog();
-        //       },
-        //     );
-        //   },
-        // ),
       );
 
   Widget buildClass(Class classObj) {
+    int spotsLeft = classObj.attendeeCapacity - classObj.attendeesRegistered;
+
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -79,7 +73,7 @@ class _ClassesPageState extends State<ClassesPage> {
                     child: Center(
                       child: Column(
                         children: [
-                          Text(classObj.userName),
+                          Text(classObj.title),
                           Text(formatDateTime(classObj.dateTime.toString()),
                               style: const TextStyle(fontSize: 10)),
                         ],
@@ -92,10 +86,12 @@ class _ClassesPageState extends State<ClassesPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(classObj.title),
+                    Text('Hosted by: ${classObj.userName}'),
+                    const SizedBox(height: 10),
                     Text(classObj.description),
-                    Text('Attendees: ${classObj.attendeesRegistered}'),
-                    Text('Capacity: ${classObj.attendeeCapacity}'),
+                    const SizedBox(height: 10),
+                    Text(
+                        '$spotsLeft / ${classObj.attendeeCapacity} spots left'),
                   ],
                 ),
               ),
@@ -104,6 +100,8 @@ class _ClassesPageState extends State<ClassesPage> {
         );
       },
       child: ClassesWidget(
+        userId: getCurrentUser()!.uid,
+        classId: classObj.id,
         userName: classObj.userName,
         title: classObj.title,
         description: classObj.description,

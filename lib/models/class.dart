@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Class {
+  final String id;
   final String userName;
   final String title;
   final String description;
@@ -10,7 +11,8 @@ class Class {
   final int attendeesRegistered;
 
   Class(
-      {required this.userName,
+      {required this.id,
+      required this.userName,
       required this.title,
       required this.description,
       required this.dateTime,
@@ -19,6 +21,7 @@ class Class {
       required this.attendeesRegistered});
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'userName': userName,
         'title': title,
         'description': description,
@@ -29,6 +32,7 @@ class Class {
       };
 
   static Class fromJson(Map<String, dynamic> json) => Class(
+        id: json['id'],
         userName: json['userName'],
         title: json['title'],
         description: json['description'],
@@ -45,7 +49,7 @@ class Class {
           snapshot.docs.map((doc) => Class.fromJson(doc.data())).toList());
 
   static Future createClass(
-      {required String hostUserId,
+      {required String id,
       required String userName,
       required String title,
       required String description,
@@ -54,6 +58,7 @@ class Class {
       required int attendeeCapacity}) async {
     final docClass = FirebaseFirestore.instance.collection('classes').doc();
     final classObj = Class(
+      id: id,
       userName: userName,
       title: title,
       description: description,
