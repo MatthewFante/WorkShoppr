@@ -191,6 +191,11 @@ class _EquipmentPageState extends State<EquipmentPage> {
                         'timeSlot': _selectedTimeSlot,
                         'notes': _notesController.text,
                       });
+
+                      // Show a snackbar with a message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Reservation successful!')),
+                      );
                     }
 
                     _dateController.text = '';
@@ -215,4 +220,16 @@ String formatDate(String dateTimeString) {
   DateFormat formatter = DateFormat('MM/d/y');
   String prettyDateTime = formatter.format(dateTime);
   return prettyDateTime;
+}
+
+String? validateDate(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Please choose a date';
+  }
+  final selectedDate = DateTime.parse(value);
+  final now = DateTime.now();
+  if (selectedDate.isBefore(now)) {
+    return 'Please choose a date in the future';
+  }
+  return null;
 }

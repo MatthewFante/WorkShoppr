@@ -158,7 +158,12 @@ class _NewClassDialogState extends State<NewClassDialog> {
                 'attendeeCapacity': attendeeCapacity,
                 'attendeesRegistered': 0,
               });
-
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Class added!'),
+                  duration: Duration(seconds: 1),
+                ),
+              );
               // Dismiss the dialog
               Navigator.of(context).pop();
             }

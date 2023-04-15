@@ -123,6 +123,12 @@ class _NewPostDialogState extends State<NewPostDialog> {
             if (_formKey.currentState!.validate()) {
               await Post.createPost(
                   userId: username, content: content, imageUrl: imageUrl);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Posted successfully!'),
+                  duration: Duration(seconds: 1),
+                ),
+              );
               Navigator.pop(context);
               contentController.text = '';
               imageUrlController.text = '';
