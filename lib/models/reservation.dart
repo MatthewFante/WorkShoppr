@@ -5,12 +5,14 @@ class Reservation {
   final DateTime date;
   final String timeSlot;
   final String notes;
+  final String userId;
 
   Reservation({
     required this.equipmentReserved,
     required this.date,
     required this.timeSlot,
     required this.notes,
+    required this.userId,
   });
 
   Map<String, dynamic> toJson() => {
@@ -25,6 +27,7 @@ class Reservation {
         date: DateTime.parse(json['date']),
         timeSlot: json['timeSlot'],
         notes: json['notes'],
+        userId: json['userId'],
       );
 
   static Stream<List<Reservation>> readReservations(DateTime date) =>
@@ -41,6 +44,7 @@ class Reservation {
     required DateTime date,
     required String timeSlot,
     required String notes,
+    required String userId,
   }) async {
     final docReservation =
         FirebaseFirestore.instance.collection('reservations').doc();
@@ -49,8 +53,20 @@ class Reservation {
       date: date,
       timeSlot: timeSlot,
       notes: notes,
+      userId: userId,
     );
     var json = reservationObj.toJson();
     await docReservation.set(json);
+  }
+
+  factory Reservation.fromSnapshot(DocumentSnapshot snapshot) {
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    return Reservation(
+      userId: data['userId'],
+      equipmentReserved: data['equipmentReserved'],
+      date: (data['date'] as Timestamp).toDate(),
+      timeSlot: data['timeSlot'],
+      notes: data['notes'],
+    );
   }
 }
