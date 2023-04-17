@@ -244,7 +244,8 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
               if (equipmentHasConflictingReservations) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                      content: Text('That equipment is already reserved')),
+                      content: Text(
+                          'That equipment is already reserved for that timeslot.')),
                 );
                 return;
               }
@@ -252,7 +253,8 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
               if (userHasConflictingReservations) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                      content: Text('You already have a reservation')),
+                      content:
+                          Text('You already have a reservation at that time.')),
                 );
                 return;
               }

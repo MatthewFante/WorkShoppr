@@ -34,95 +34,129 @@ class _ReservationWidgetState extends State<ReservationWidget> {
     DateTime dateTime = DateTime(year, month, day);
 
     return Card(
+        color: const Color.fromARGB(255, 213, 213, 213),
+        // elevation: 5,
+        shadowColor: Colors.black,
         child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
+          padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                DateFormat('MMMM')
-                    .format(DateTime.parse(dateTime.toString()))
-                    .toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 16.0,
+              Column(
+                children: [
+                  Text(
+                    DateFormat('MMMM')
+                        .format(DateTime.parse(dateTime.toString()))
+                        .toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  Text(
+                    DateFormat('d')
+                        .format(DateTime.parse(dateTime.toString()))
+                        .toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 64.0,
+                    ),
+                  ),
+                  Text(
+                    widget.timeSlot,
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 16.0),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.equipmentReserved.truncatedEquipment,
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    SizedBox(
+                      height: 50,
+                      child: Text(
+                        widget.notes != ''
+                            ? 'Notes: ${widget.notes.truncatedNotes}'
+                            : 'No notes',
+                        style: const TextStyle(
+                          fontSize: 12.0,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(width: 200),
+                        TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 242, 174, 174)),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            FirebaseFirestore.instance
+                                .collection('reservations')
+                                .where('userId', isEqualTo: widget.userId)
+                                .where('equipmentReserved',
+                                    isEqualTo: widget.equipmentReserved)
+                                .where('date', isEqualTo: widget.date)
+                                .where('timeSlot', isEqualTo: widget.timeSlot)
+                                .get()
+                                .then((querySnapshot) {
+                              for (var doc in querySnapshot.docs) {
+                                doc.reference.delete();
+                              }
+                            });
+                          },
+                          child: const Text(
+                            'CANCEL',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color(0xff990000),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                DateFormat('d')
-                    .format(DateTime.parse(dateTime.toString()))
-                    .toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 64.0,
-                ),
-              ),
-              Text(
-                widget.timeSlot,
-                style: const TextStyle(
-                  fontSize: 16.0,
-                ),
-              ),
+              SizedBox(
+                height: 70,
+              )
             ],
           ),
-          const SizedBox(width: 16.0),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  widget.equipmentReserved,
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  widget.notes != '' ? 'Notes: ${widget.notes}' : 'No notes',
-                  style: const TextStyle(
-                    fontSize: 12.0,
-                  ),
-                )
-              ],
-            ),
-          ),
-          TextButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(
-                  const Color.fromARGB(255, 242, 174, 174)),
-              shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
-            ),
-            onPressed: () {
-              FirebaseFirestore.instance
-                  .collection('reservations')
-                  .where('userId', isEqualTo: widget.userId)
-                  .where('equipmentReserved',
-                      isEqualTo: widget.equipmentReserved)
-                  .where('date', isEqualTo: widget.date)
-                  .where('timeSlot', isEqualTo: widget.timeSlot)
-                  .get()
-                  .then((querySnapshot) {
-                for (var doc in querySnapshot.docs) {
-                  doc.reference.delete();
-                }
-              });
-            },
-            child: const Text(
-              'CANCEL',
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Color(0xff990000),
-              ),
-            ),
-          )
-        ],
-      ),
-    ));
+        ));
+  }
+}
+
+extension on String {
+  String get truncatedEquipment {
+    if (length <= 20) {
+      return this;
+    } else {
+      return '${substring(0, 18)}...';
+    }
+  }
+
+  String get truncatedNotes {
+    if (length <= 150) {
+      return this;
+    } else {
+      return '${substring(0, 145)}...';
+    }
   }
 }

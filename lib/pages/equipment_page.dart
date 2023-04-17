@@ -42,6 +42,8 @@ class _EquipmentPageState extends State<EquipmentPage> {
             } else if (snapshot.hasData) {
               final reservations = snapshot.data!
                   .where((reservation) => reservation.userId == currentUserId)
+                  .where((reservation) => dateFromString(reservation.date)
+                      .isAfter(DateTime.now().subtract(Duration(days: 1))))
                   .toList();
 
               reservations.sort((a, b) => a.date.compareTo(b.date));
@@ -71,4 +73,14 @@ class _EquipmentPageState extends State<EquipmentPage> {
       notes: classObj.notes,
     );
   }
+}
+
+DateTime dateFromString(String dateString) {
+  List<String> dateComponents = dateString.split('/');
+  int day = int.parse(dateComponents[1]);
+  int month = int.parse(dateComponents[0]);
+  int year = int.parse(dateComponents[2]);
+  DateTime dateTime = DateTime(year, month, day);
+
+  return dateTime;
 }
