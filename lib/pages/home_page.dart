@@ -60,10 +60,6 @@ class _HomePageState extends State<HomePage> {
         ? showAddClassButton = true
         : showAddClassButton = false;
 
-    _currentIndex == 2
-        ? showAddReservationButton = true
-        : showAddReservationButton = false;
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -107,7 +103,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.handyman),
-            label: 'Equipment',
+            label: 'Reservations',
           ),
         ],
       ),
@@ -145,7 +141,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               leading: const Icon(Icons.handyman),
-              title: const Text('Equipment'),
+              title: const Text('Reservations'),
               onTap: () {
                 setState(() {
                   _currentIndex = 2;
