@@ -9,12 +9,15 @@ class EquipmentPage extends StatefulWidget {
   _EquipmentPageState createState() => _EquipmentPageState();
 }
 
+final dateFormat = DateFormat('MM/dd/yyyy');
+
 class _EquipmentPageState extends State<EquipmentPage> {
   final _formKey = GlobalKey<FormState>();
   final _dateController = TextEditingController();
   final _notesController = TextEditingController();
   var _selectedEquipment = '';
   var _selectedTimeSlot = '';
+  var _selectedDate = '';
 
   List<String> _availableEquipment = [];
   List<String> _availableTimeSlots = [];
@@ -39,11 +42,28 @@ class _EquipmentPageState extends State<EquipmentPage> {
   @override
   void initState() {
     super.initState();
+
     getTimeslots().then((timeslots) {
       setState(() {
         _availableTimeSlots = timeslots;
       });
     });
+
+    getEquipmentList().listen((equipment) {
+      setState(() {
+        _availableEquipment = equipment;
+        _selectedEquipment = _availableEquipment[0];
+      });
+
+      _dateController.text = DateTime.now().toString();
+    });
+  }
+
+  Stream<List<String>> getEquipmentList() {
+    return FirebaseFirestore.instance.collection('equipment').snapshots().map(
+        (snapshot) =>
+            snapshot.docs.map((doc) => doc['name'].toString()).toList()
+              ..sort());
   }
 
   @override
@@ -53,56 +73,39 @@ class _EquipmentPageState extends State<EquipmentPage> {
       return user;
     }
 
-    final currentUserName = getCurrentUser()?.displayName ?? 'Unknown';
     final currentUserId = getCurrentUser()?.uid ?? 'Unknown';
+
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FutureBuilder<QuerySnapshot>(
-                future:
-                    FirebaseFirestore.instance.collection('equipment').get(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
-                  }
-                  _availableEquipment = snapshot.data!.docs
-                      .map((doc) => doc['name'].toString())
-                      .toList();
-
-                  _availableEquipment.sort((a, b) => a.compareTo(b));
-                  _selectedEquipment = _availableEquipment[0];
-                  return DropdownButtonFormField(
-                    value: _selectedEquipment,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedEquipment = newValue as String;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Equipment Reserved',
-                    ),
-                    items: _availableEquipment.map((equipment) {
-                      return DropdownMenuItem(
-                        value: equipment,
-                        child: Text(equipment),
-                      );
-                    }).toList(),
-                  );
+              DropdownButtonFormField(
+                value: _selectedEquipment,
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedEquipment = newValue as String;
+                  });
                 },
+                decoration: const InputDecoration(
+                  labelText: 'Equipment Reserved',
+                ),
+                items: _availableEquipment.map((equipment) {
+                  return DropdownMenuItem(
+                    value: equipment,
+                    child: Text(equipment),
+                  );
+                }).toList(),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    _dateController.text != ''
-                        ? formatDate(_dateController.text)
-                        : 'Date',
+                    _selectedDate != '' ? _selectedDate : 'Select a date',
                     style: const TextStyle(fontSize: 16.0),
                   ),
                   IconButton(
@@ -120,8 +123,9 @@ class _EquipmentPageState extends State<EquipmentPage> {
                               initialDateTime: DateTime.now(),
                               onDateTimeChanged: (DateTime date) {
                                 // Set the text field to the selected date.
-                                _dateController.text = date.toString();
-                                setState(() {});
+                                setState(() {
+                                  _selectedDate = date.toString();
+                                });
                               },
                             ),
                           );
@@ -181,24 +185,38 @@ class _EquipmentPageState extends State<EquipmentPage> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
+                      DateTime selectedDate =
+                          DateFormat('yyyy-MM-dd').parse(_dateController.text);
+                      if (selectedDate.isBefore(DateTime.now())) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text('Please select a date in the future')),
+                        );
+                        return;
+                      }
                       // Create a new reservation document
+                      final formattedDate = dateFormat
+                          .format(DateTime.parse(selectedDate.toString()));
                       await FirebaseFirestore.instance
                           .collection('reservations')
                           .add({
                         'userId': currentUserId,
                         'equipmentReserved': _selectedEquipment,
-                        'date': formatDate(_dateController.text),
+                        'date': formattedDate,
                         'timeSlot': _selectedTimeSlot,
                         'notes': _notesController.text,
                       });
 
                       // Show a snackbar with a message
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Reservation successful!')),
+                        SnackBar(
+                            content: Text(
+                                '$_selectedEquipment Reservation successful!')),
                       );
                     }
 
-                    _dateController.text = '';
+                    _dateController.text = DateTime.now().toString();
                     _selectedTimeSlot = _availableTimeSlots[0];
                     _notesController.text = '';
                     _selectedEquipment = '';
@@ -213,13 +231,6 @@ class _EquipmentPageState extends State<EquipmentPage> {
       ),
     );
   }
-}
-
-String formatDate(String dateTimeString) {
-  DateTime dateTime = DateTime.parse(dateTimeString);
-  DateFormat formatter = DateFormat('MM/d/y');
-  String prettyDateTime = formatter.format(dateTime);
-  return prettyDateTime;
 }
 
 String? validateDate(String? value) {
