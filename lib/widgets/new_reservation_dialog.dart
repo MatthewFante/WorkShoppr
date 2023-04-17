@@ -78,14 +78,40 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
 
     final currentUserId = getCurrentUser()?.uid ?? 'Unknown';
 
-    Stream<List<DocumentSnapshot>> getReservations() {
-      return FirebaseFirestore.instance
+    Future<bool> checkForConflictingReservationsEquipment() async {
+      final snapshot1 = await FirebaseFirestore.instance
           .collection('reservations')
-          .where('date', isEqualTo: _selectedDate)
+          .where('equipmentReserved', isEqualTo: _selectedEquipment)
+          .where('date',
+              isEqualTo: dateFormat.format(DateTime.parse(_selectedDate)))
           .where('timeSlot', isEqualTo: _selectedTimeSlot)
-          .where('equipment', isEqualTo: _selectedEquipment)
-          .snapshots()
-          .map((snapshot) => snapshot.docs);
+          .get();
+
+      if (snapshot1.docs.isNotEmpty) {
+        // Conflicting reservation found
+        return true;
+      } else {
+        // No conflicting reservation found
+        return false;
+      }
+    }
+
+    Future<bool> checkForConflictingReservationsUser() async {
+      final snapshot1 = await FirebaseFirestore.instance
+          .collection('reservations')
+          .where('userId', isEqualTo: currentUserId)
+          .where('date',
+              isEqualTo: dateFormat.format(DateTime.parse(_selectedDate)))
+          .where('timeSlot', isEqualTo: _selectedTimeSlot)
+          .get();
+
+      if (snapshot1.docs.isNotEmpty) {
+        // Conflicting reservation found
+        return true;
+      } else {
+        // No conflicting reservation found
+        return false;
+      }
     }
 
     return AlertDialog(
@@ -200,19 +226,34 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
         ),
         ElevatedButton(
           onPressed: () async {
+            final equipmentHasConflictingReservations =
+                await checkForConflictingReservationsEquipment();
+
+            final userHasConflictingReservations =
+                await checkForConflictingReservationsUser();
+
             if (_formKey.currentState!.validate()) {
               if (DateTime.parse(_selectedDate).isBefore(DateTime.now())) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                       content: Text('Please select a date in the future')),
                 );
-                final reservations = await getReservations().first;
-                final conflictingReservations = reservations.where((doc) =>
-                    doc['date'] == _selectedDate &&
-                    doc['timeslot'] == _selectedTimeSlot);
+                return;
+              }
 
-                print(conflictingReservations.toString());
+              if (equipmentHasConflictingReservations) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('That equipment is already reserved')),
+                );
+                return;
+              }
 
+              if (userHasConflictingReservations) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('You already have a reservation')),
+                );
                 return;
               }
 
