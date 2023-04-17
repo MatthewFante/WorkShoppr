@@ -9,9 +9,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   User? user = FirebaseAuth.instance.currentUser;
-  Widget startPage = LoginPage();
+  Widget startPage = const LoginPage();
   if (user != null) {
-    startPage = HomePage();
+    startPage = const HomePage();
   }
 
   runApp(MyApp(startPage: startPage));

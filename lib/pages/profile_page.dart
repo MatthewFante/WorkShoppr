@@ -13,8 +13,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool _isSendingVerification = false;
-  bool _isSigningOut = false;
   late User _currentUser;
 
   @override
@@ -27,12 +25,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Profile'),
+        title: const Text('User Profile'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => const HomePage()),
             );
           },
         ),
@@ -69,10 +67,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         onPressed: () async {
                           await _currentUser.sendEmailVerification();
                         },
-                        child: Text('Verify email'),
+                        child: const Text('Verify email'),
                       ),
                 IconButton(
-                  icon: Icon(Icons.refresh),
+                  icon: const Icon(Icons.refresh),
                   onPressed: () async {
                     User? user = await FireAuth.refreshUser(_currentUser);
                     if (user != null) {
@@ -84,18 +82,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-            SizedBox(height: 200),
+            const SizedBox(height: 200),
             ElevatedButton(
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
 
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => LoginPage(),
+                      builder: (context) => const LoginPage(),
                     ),
                   );
                 },
-                child: Text('Sign out'))
+                child: const Text('Sign out'))
 
             // Add widgets for verifying email
             // and, signing out the user

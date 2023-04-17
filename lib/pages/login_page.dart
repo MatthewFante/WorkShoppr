@@ -10,11 +10,11 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    final _emailTextController = TextEditingController();
-    final _passwordTextController = TextEditingController();
-    final _focusEmail = FocusNode();
-    final _focusPassword = FocusNode();
+    final formKey = GlobalKey<FormState>();
+    final emailTextController = TextEditingController();
+    final passwordTextController = TextEditingController();
+    final focusEmail = FocusNode();
+    final focusPassword = FocusNode();
 
     return Scaffold(
       appBar: AppBar(
@@ -25,7 +25,7 @@ class LoginPage extends StatelessWidget {
             )),
       ),
       body: Form(
-        key: _formKey,
+        key: formKey,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -35,8 +35,8 @@ class LoginPage extends StatelessWidget {
                 decoration: const InputDecoration(
                   hintText: "Email",
                 ),
-                controller: _emailTextController,
-                focusNode: _focusEmail,
+                controller: emailTextController,
+                focusNode: focusEmail,
                 validator: (value) => Validator.validateEmail(email: value!),
               ),
               const SizedBox(height: 8.0),
@@ -44,8 +44,8 @@ class LoginPage extends StatelessWidget {
                 decoration: const InputDecoration(
                   hintText: "Password",
                 ),
-                controller: _passwordTextController,
-                focusNode: _focusPassword,
+                controller: passwordTextController,
+                focusNode: focusPassword,
                 obscureText: true,
                 validator: (value) =>
                     Validator.validatePassword(password: value!),
@@ -53,10 +53,10 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 8.0),
               ElevatedButton(
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     User? user = await FireAuth.signInUsingEmailPassword(
-                      email: _emailTextController.text,
-                      password: _passwordTextController.text,
+                      email: emailTextController.text,
+                      password: passwordTextController.text,
                       context: context,
                     );
                     if (user != null) {
@@ -78,7 +78,8 @@ class LoginPage extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterPage()),
                   );
                 },
                 child: const Text(

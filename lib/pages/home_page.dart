@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const FeedPage(),
     const ClassesPage(),
-    EquipmentPage(),
+    const EquipmentPage(),
   ];
 
   @override
@@ -175,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 },
-                child: Text('Sign out')),
+                child: const Text('Sign out')),
           ],
         ),
       ),

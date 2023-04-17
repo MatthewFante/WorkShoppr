@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Reservation {
   final String equipmentReserved;
-  final DateTime date;
+  final String date;
   final String timeSlot;
   final String notes;
   final String userId;
@@ -17,31 +17,28 @@ class Reservation {
 
   Map<String, dynamic> toJson() => {
         'equipmentReserved': equipmentReserved,
-        'date': date.toIso8601String(),
+        'date': date,
         'timeSlot': timeSlot,
         'notes': notes,
       };
 
   static Reservation fromJson(Map<String, dynamic> json) => Reservation(
         equipmentReserved: json['equipmentReserved'],
-        date: DateTime.parse(json['date']),
+        date: json['date'],
         timeSlot: json['timeSlot'],
         notes: json['notes'],
         userId: json['userId'],
       );
 
-  static Stream<List<Reservation>> readReservations(DateTime date) =>
-      FirebaseFirestore.instance
-          .collection('reservations')
-          .where('date', isEqualTo: date.toIso8601String())
-          .snapshots()
-          .map((snapshot) => snapshot.docs
+  static Stream<List<Reservation>> readReservations() =>
+      FirebaseFirestore.instance.collection('reservations').snapshots().map(
+          (snapshot) => snapshot.docs
               .map((doc) => Reservation.fromJson(doc.data()))
               .toList());
 
   static Future<void> createReservation({
     required String equipmentReserved,
-    required DateTime date,
+    required String date,
     required String timeSlot,
     required String notes,
     required String userId,
@@ -64,7 +61,7 @@ class Reservation {
     return Reservation(
       userId: data['userId'],
       equipmentReserved: data['equipmentReserved'],
-      date: (data['date'] as Timestamp).toDate(),
+      date: data['date'],
       timeSlot: data['timeSlot'],
       notes: data['notes'],
     );

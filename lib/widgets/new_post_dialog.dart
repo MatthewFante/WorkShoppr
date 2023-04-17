@@ -15,8 +15,6 @@ class _NewPostDialogState extends State<NewPostDialog> {
   final imageUrlController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  String? _imageUrl;
-
   String truncateUrl(String url) {
     if (url.isEmpty || url == '') {
       return 'No image selected';
@@ -26,7 +24,7 @@ class _NewPostDialogState extends State<NewPostDialog> {
       return url;
     }
 
-    return url.substring(0, 25) + "...";
+    return "${url.substring(0, 25)}...";
   }
 
   Future<String?> _showImageUploadModal(BuildContext context) async {
@@ -95,8 +93,6 @@ class _NewPostDialogState extends State<NewPostDialog> {
                     onPressed: () {
                       _showImageUploadModal(context).then((imageUrl) {
                         setState(() {
-                          _imageUrl = imageUrl;
-
                           imageUrlController.text = imageUrl ?? '';
                         });
                       });
@@ -124,7 +120,7 @@ class _NewPostDialogState extends State<NewPostDialog> {
               await Post.createPost(
                   userId: username, content: content, imageUrl: imageUrl);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Posted successfully!'),
                   duration: Duration(seconds: 1),
                 ),

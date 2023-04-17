@@ -15,12 +15,12 @@ class ClassesPage extends StatefulWidget {
 }
 
 class _ClassesPageState extends State<ClassesPage> {
-  @override
   User? getCurrentUser() {
     final User? user = FirebaseAuth.instance.currentUser;
     return user;
   }
 
+  @override
   Widget build(BuildContext context) => Scaffold(
         body: StreamBuilder<List<Class>>(
           stream: Class.readClasses(),

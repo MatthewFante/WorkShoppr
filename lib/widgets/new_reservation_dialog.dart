@@ -81,7 +81,9 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
     Stream<List<DocumentSnapshot>> getReservations() {
       return FirebaseFirestore.instance
           .collection('reservations')
-          .where('userId', isEqualTo: currentUserId)
+          .where('date', isEqualTo: _selectedDate)
+          .where('timeSlot', isEqualTo: _selectedTimeSlot)
+          .where('equipment', isEqualTo: _selectedEquipment)
           .snapshots()
           .map((snapshot) => snapshot.docs);
     }
@@ -204,10 +206,17 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
                   const SnackBar(
                       content: Text('Please select a date in the future')),
                 );
+                final reservations = await getReservations().first;
+                final conflictingReservations = reservations.where((doc) =>
+                    doc['date'] == _selectedDate &&
+                    doc['timeslot'] == _selectedTimeSlot);
+
+                print(conflictingReservations.toString());
+
                 return;
               }
-              // Create a new reservation document
 
+              // Create a new reservation document
               await FirebaseFirestore.instance.collection('reservations').add({
                 'userId': currentUserId,
                 'equipmentReserved': _selectedEquipment,

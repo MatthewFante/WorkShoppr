@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +13,7 @@ class ClassesWidget extends StatefulWidget {
   final int attendeesRegistered;
 
   const ClassesWidget({
+    super.key,
     required this.userId,
     required this.classId,
     required this.userName,
@@ -62,9 +61,9 @@ class _ClassesWidgetState extends State<ClassesWidget> {
           .where('classId', isEqualTo: widget.classId)
           .get()
           .then((snapshot) {
-        snapshot.docs.forEach((doc) {
+        for (var doc in snapshot.docs) {
           doc.reference.delete();
-        });
+        }
         DocumentReference classRef = FirebaseFirestore.instance
             .collection('classes')
             .doc(widget.classId);
@@ -96,7 +95,7 @@ class _ClassesWidgetState extends State<ClassesWidget> {
     }
 
     return Card(
-      color: Color.fromARGB(255, 213, 213, 213),
+      color: const Color.fromARGB(255, 213, 213, 213),
       // elevation: 5,
       shadowColor: Colors.black,
       child: Padding(
@@ -177,7 +176,6 @@ class _ClassesWidgetState extends State<ClassesWidget> {
                                   ),
                                 ),
                               );
-                              ;
                             } else {
                               return spotsLeft != 0
                                   ? TextButton(
@@ -225,7 +223,7 @@ class _ClassesWidgetState extends State<ClassesWidget> {
                                     );
                             }
                           } else {
-                            return CircularProgressIndicator();
+                            return const CircularProgressIndicator();
                           }
                         }),
                   ],
@@ -244,7 +242,7 @@ extension on String {
     if (length <= 20) {
       return this;
     } else {
-      return substring(0, 15) + '...';
+      return '${substring(0, 15)}...';
     }
   }
 
