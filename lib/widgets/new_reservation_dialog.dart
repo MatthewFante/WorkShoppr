@@ -25,11 +25,29 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
 
   Future<List<String>> getTimeslots() async {
     List<String> timeslots = [];
-    QuerySnapshot snapshot =
+    List<String> reservedTimeslots = [];
+
+    QuerySnapshot snapshot1 =
         await FirebaseFirestore.instance.collection('timeslots').get();
-    for (var doc in snapshot.docs) {
+
+    final snapshot2 = await FirebaseFirestore.instance
+        .collection('reservations')
+        .where('equipmentReserved', isEqualTo: _selectedEquipment)
+        .where('date',
+            isEqualTo: dateFormat.format(DateTime.parse(_selectedDate)))
+        .get();
+
+    for (var doc in snapshot1.docs) {
       timeslots.add(doc['slot']);
     }
+
+    for (var doc in snapshot2.docs) {
+      reservedTimeslots.add(doc['timeSlot']);
+    }
+
+    timeslots.removeWhere((element) => reservedTimeslots.contains(element));
+
+    timeslots.sort();
     return timeslots;
   }
 
@@ -132,6 +150,13 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
                         setState(() {
                           _selectedEquipment = newValue as String;
                         });
+
+                        getTimeslots().then((timeslots) {
+                          setState(() {
+                            _availableTimeSlots = timeslots;
+                            _selectedTimeSlot = _availableTimeSlots[0];
+                          });
+                        });
                       },
                       decoration: const InputDecoration(
                         labelText: 'Equipment Reserved',
@@ -167,9 +192,16 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
                                     mode: CupertinoDatePickerMode.date,
                                     initialDateTime: DateTime.now(),
                                     onDateTimeChanged: (DateTime date) {
-                                      // Set the text field to the selected date.
                                       setState(() {
                                         _selectedDate = date.toString();
+                                      });
+
+                                      getTimeslots().then((timeslots) {
+                                        setState(() {
+                                          _availableTimeSlots = timeslots;
+                                          _selectedTimeSlot =
+                                              _availableTimeSlots[0];
+                                        });
                                       });
                                     },
                                   ),

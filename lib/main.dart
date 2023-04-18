@@ -8,8 +8,10 @@ import 'package:workshoppr/assets/palette.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   User? user = FirebaseAuth.instance.currentUser;
   Widget startPage = const LoginPage();
+
   if (user != null) {
     startPage = const HomePage();
   }

@@ -134,7 +134,7 @@ class _ReservationWidgetState extends State<ReservationWidget> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 70,
               )
             ],
