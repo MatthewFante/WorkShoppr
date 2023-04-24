@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this widget is used to display a reservation in the reservations page
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -27,12 +33,16 @@ class ReservationWidget extends StatefulWidget {
 class _ReservationWidgetState extends State<ReservationWidget> {
   @override
   Widget build(BuildContext context) {
+    // Split the string into day, month, and year components
     List<String> dateComponents = widget.date.split('/');
     int day = int.parse(dateComponents[1]);
     int month = int.parse(dateComponents[0]);
     int year = int.parse(dateComponents[2]);
+
+    // Create a DateTime object
     DateTime dateTime = DateTime(year, month, day);
 
+    // Return the reservation widget
     return Card(
         color: const Color.fromARGB(255, 213, 213, 213),
         // elevation: 5,
@@ -85,6 +95,7 @@ class _ReservationWidgetState extends State<ReservationWidget> {
                     SizedBox(
                       height: 50,
                       child: Text(
+                        // If there are notes, display them
                         widget.notes != ''
                             ? 'Notes: ${widget.notes.truncatedNotes}'
                             : 'No notes',
@@ -107,6 +118,7 @@ class _ReservationWidgetState extends State<ReservationWidget> {
                             ),
                           ),
                           onPressed: () {
+                            // Delete the reservation from the database
                             FirebaseFirestore.instance
                                 .collection('reservations')
                                 .where('userId', isEqualTo: widget.userId)
@@ -144,6 +156,7 @@ class _ReservationWidgetState extends State<ReservationWidget> {
 }
 
 extension on String {
+  // Truncate the string if it is too long
   String get truncatedEquipment {
     if (length <= 20) {
       return this;
@@ -152,6 +165,7 @@ extension on String {
     }
   }
 
+  // Truncate the string if it is too long
   String get truncatedNotes {
     if (length <= 150) {
       return this;

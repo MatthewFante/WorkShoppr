@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this class describes the custom color palette for the app
+
 import 'package:flutter/material.dart';
 
 class Palette {

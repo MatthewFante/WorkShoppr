@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this widget is used to display a 'create class' dialog
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +20,7 @@ class NewClassDialog extends StatefulWidget {
 }
 
 class _NewClassDialogState extends State<NewClassDialog> {
+  // create controllers for the text fields
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _dateTimeController = TextEditingController();
@@ -26,11 +33,14 @@ class _NewClassDialogState extends State<NewClassDialog> {
   @override
   Widget build(BuildContext context) {
     User? getCurrentUser() {
+      // get the current user
       final User? user = FirebaseAuth.instance.currentUser;
       return user;
     }
 
+    // get the current user's username
     final username = getCurrentUser()?.displayName ?? 'Unknown';
+
     return AlertDialog(
       title: const Text('New Class'),
       content: SingleChildScrollView(
@@ -130,6 +140,7 @@ class _NewClassDialogState extends State<NewClassDialog> {
       actions: [
         TextButton(
           onPressed: () {
+            // Dismiss the dialog
             Navigator.of(context).pop();
           },
           child: const Text('Cancel'),
@@ -159,6 +170,7 @@ class _NewClassDialogState extends State<NewClassDialog> {
                 'attendeesRegistered': 0,
               });
               ScaffoldMessenger.of(context).showSnackBar(
+                // Display a snackbar with a success message
                 const SnackBar(
                   content: Text('Class added!'),
                   duration: Duration(seconds: 1),
@@ -176,6 +188,7 @@ class _NewClassDialogState extends State<NewClassDialog> {
 }
 
 String formatDateTime(String dateTimeString) {
+  // Format the date and time
   DateTime dateTime = DateTime.parse(dateTimeString);
   DateFormat formatter = DateFormat('MMMM d, y, h:mm a');
   String prettyDateTime = formatter.format(dateTime);
@@ -183,6 +196,7 @@ String formatDateTime(String dateTimeString) {
 }
 
 DateTime getNoonTomorrow() {
+  // Get the date and time for noon tomorrow
   DateTime tomorrow = DateTime.now().add(const Duration(days: 1));
   DateTime tomorrowAtNoon =
       DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 12, 0);

@@ -1,3 +1,12 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this class descibes the navigation framework for the app.
+// it contains the bottom navigation bar and the pages that are navigated to when the user clicks on a navigation item
+// it also determines whether the user is an admin and displays the add class button on the classes page if
+// the user is an admin
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +15,7 @@ import 'package:workshoppr/pages/classes_page.dart';
 import 'package:workshoppr/pages/equipment_page.dart';
 import 'package:workshoppr/pages/login_page.dart';
 import 'package:workshoppr/pages/profile_page.dart';
-
-import '../widgets/new_class_dialog.dart';
+import 'package:workshoppr/widgets/new_class_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,12 +25,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // set the initial state of the page to the feed page
   int _currentIndex = 0;
   bool showAddClassButton = false;
-  bool showAddReservationButton = false;
 
+  // create a list to hold the uids of admins
   List<String> admins = [];
 
+  // get the uids of admins from the database
   Future<void> getAdmins() async {
     final CollectionReference<Map<String, dynamic>> collectionReference =
         FirebaseFirestore.instance.collection('admins');
@@ -33,6 +43,7 @@ class _HomePageState extends State<HomePage> {
     admins = ids;
   }
 
+  // create a list of the pages that are navigated to when the user clicks on a navigation item
   final List<Widget> _pages = [
     const FeedPage(),
     const ClassesPage(),
@@ -41,19 +52,23 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // get the current user
     User? getCurrentUser() {
       final User? user = FirebaseAuth.instance.currentUser;
       return user;
     }
 
+    // get the name and uid of the current user
     final currentUserName = getCurrentUser()?.displayName ?? 'Unknown';
     final currentUserId = getCurrentUser()?.uid ?? 'Unknown';
 
+    // check if the current user is an admin
     bool userIsAdmin(String uid) {
       getAdmins();
       return admins.contains(uid);
     }
 
+    // if the user is an admin, show the add class button on the classes page
     bool adminView = userIsAdmin(currentUserId);
 
     _currentIndex == 1 && adminView
@@ -149,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 450,
             ),
             TextButton(

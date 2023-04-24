@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this class describes the login page which allows the user to login to the app
+
 import 'package:flutter/material.dart';
 import 'package:workshoppr/authentication/validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';

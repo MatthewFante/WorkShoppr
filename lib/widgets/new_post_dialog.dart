@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this widget is used to display a 'create post' dialog
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:workshoppr/models/post.dart';
@@ -11,11 +17,13 @@ class NewPostDialog extends StatefulWidget {
 }
 
 class _NewPostDialogState extends State<NewPostDialog> {
+  // create controllers for the text fields
   final contentController = TextEditingController();
   final imageUrlController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   String truncateUrl(String url) {
+    // truncate the url to 25 characters
     if (url.isEmpty || url == '') {
       return 'No image selected';
     }
@@ -44,10 +52,12 @@ class _NewPostDialogState extends State<NewPostDialog> {
   @override
   Widget build(BuildContext context) {
     User? getCurrentUser() {
+      // get the current user
       final User? user = FirebaseAuth.instance.currentUser;
       return user;
     }
 
+    // get the current user's username
     final username = getCurrentUser()?.displayName ?? 'Unknown';
 
     return AlertDialog(
@@ -75,6 +85,7 @@ class _NewPostDialogState extends State<NewPostDialog> {
                   ),
                 ),
                 validator: (value) {
+                  // validate the content field
                   if (value == null || value.isEmpty) {
                     return 'Please enter some text';
                   }
@@ -91,6 +102,7 @@ class _NewPostDialogState extends State<NewPostDialog> {
                   IconButton(
                     icon: const Icon(Icons.cloud_upload),
                     onPressed: () {
+                      // show the image upload modal
                       _showImageUploadModal(context).then((imageUrl) {
                         setState(() {
                           imageUrlController.text = imageUrl ?? '';
@@ -108,12 +120,14 @@ class _NewPostDialogState extends State<NewPostDialog> {
         TextButton(
           child: const Text('Cancel'),
           onPressed: () {
+            // close the dialog
             Navigator.of(context).pop();
           },
         ),
         ElevatedButton(
           child: const Text('Post'),
           onPressed: () async {
+            // create a new post
             final content = contentController.text;
             final imageUrl = imageUrlController.text;
             if (_formKey.currentState!.validate()) {
@@ -121,10 +135,12 @@ class _NewPostDialogState extends State<NewPostDialog> {
                   userId: username, content: content, imageUrl: imageUrl);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
+                  // show a snackbar to confirm the post was created
                   content: Text('Posted successfully!'),
                   duration: Duration(seconds: 1),
                 ),
               );
+              // close the dialog and clear the text fields
               Navigator.pop(context);
               contentController.text = '';
               imageUrlController.text = '';

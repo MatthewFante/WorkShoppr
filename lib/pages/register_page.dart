@@ -1,5 +1,10 @@
-import 'package:flutter/material.dart';
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
 
+// this class describes the register page which allows the user to register for the app
+
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:workshoppr/authentication/fire_auth.dart';
 import 'package:workshoppr/authentication/validator.dart';

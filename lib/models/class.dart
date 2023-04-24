@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this class describes a class object and contains methods for creating and reading classes from the database
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Class {
@@ -20,6 +26,7 @@ class Class {
       required this.attendeeCapacity,
       required this.attendeesRegistered});
 
+  // convert a class object to a json object
   Map<String, dynamic> toJson() => {
         'id': id,
         'userName': userName,
@@ -31,6 +38,7 @@ class Class {
         'attendeesRegistered': attendeesRegistered,
       };
 
+  // create a Class object from a json object
   static Class fromJson(Map<String, dynamic> json) => Class(
         id: json['id'],
         userName: json['userName'],
@@ -42,12 +50,14 @@ class Class {
         attendeesRegistered: json['attendeesRegistered'],
       );
 
+  // read all classes from the database
   static Stream<List<Class>> readClasses() => FirebaseFirestore.instance
       .collection('classes')
       .snapshots()
       .map((snapshot) =>
           snapshot.docs.map((doc) => Class.fromJson(doc.data())).toList());
 
+  // create a new class in the database
   static Future createClass(
       {required String id,
       required String userName,

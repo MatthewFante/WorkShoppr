@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this widget is used to display a class in the classes page
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -35,6 +41,9 @@ class _ClassesWidgetState extends State<ClassesWidget> {
     bool rsvpMade = false;
 
     void _onRSVP() {
+      // when an attendee rsvps for a class, the class's attendeeRegistered field
+      // is incremented by 1 and a new document is added to the rsvps collection
+
       DocumentReference rsvpRef =
           FirebaseFirestore.instance.collection('rsvps').doc();
 
@@ -55,6 +64,9 @@ class _ClassesWidgetState extends State<ClassesWidget> {
     }
 
     void _onCancelRSVP() {
+      // when an attendee cancels their rsvp for a class, the class's attendeeRegistered field
+      // is decremented by 1 and the document is removed from the rsvps collection
+
       FirebaseFirestore.instance
           .collection('rsvps')
           .where('uid', isEqualTo: widget.userId)
@@ -79,13 +91,14 @@ class _ClassesWidgetState extends State<ClassesWidget> {
     }
 
     void _onFull() {
-      // Do nothing
+      // when a class is full, the rsvp button is disabled
       setState(() {
         rsvpMade = false;
       });
     }
 
     Future<bool> hasRsvp() async {
+      // checks if the user has already rsvped for the class
       final snapshot = await FirebaseFirestore.instance
           .collection('rsvps')
           .where('uid', isEqualTo: widget.userId)
@@ -96,7 +109,6 @@ class _ClassesWidgetState extends State<ClassesWidget> {
 
     return Card(
       color: const Color.fromARGB(255, 213, 213, 213),
-      // elevation: 5,
       shadowColor: Colors.black,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
@@ -238,6 +250,8 @@ class _ClassesWidgetState extends State<ClassesWidget> {
 }
 
 extension on String {
+  // truncates the title and description of a class to fit in the card
+
   String get truncatedTitle {
     if (length <= 20) {
       return this;

@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this class describes validator methods used for validating user input
+
 class Validator {
   static String? validateName({required String name}) {
     if (name == null) {

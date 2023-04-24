@@ -1,3 +1,10 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this class describes the classes page which is used to display all future the classes in the database
+// it also contains a button to create a new class (only visible to admins)
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:workshoppr/models/class.dart';
@@ -15,6 +22,7 @@ class ClassesPage extends StatefulWidget {
 }
 
 class _ClassesPageState extends State<ClassesPage> {
+  // get the current user
   User? getCurrentUser() {
     final User? user = FirebaseAuth.instance.currentUser;
     return user;
@@ -25,12 +33,16 @@ class _ClassesPageState extends State<ClassesPage> {
         body: StreamBuilder<List<Class>>(
           stream: Class.readClasses(),
           builder: (context, snapshot) {
+            // if there is an error, display an error message
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (snapshot.hasData) {
               final classes = snapshot.data!;
+
+              // sort the classes by date
               classes.sort((a, b) => a.dateTime.compareTo(b.dateTime));
 
+              // filter out classes that have already happened
               var futureClasses = classes.where((classObj) =>
                   DateTime.parse(classObj.dateTime)
                       .isAfter(DateTime.now().toUtc()));
@@ -52,6 +64,7 @@ class _ClassesPageState extends State<ClassesPage> {
       );
 
   Widget buildClass(Class classObj) {
+    // calculate the number of spots left in the class
     int spotsLeft = classObj.attendeeCapacity - classObj.attendeesRegistered;
 
     return GestureDetector(
@@ -65,6 +78,7 @@ class _ClassesPageState extends State<ClassesPage> {
                 children: [
                   GestureDetector(
                     onTap: () {
+                      // close the dialog
                       Navigator.of(context).pop();
                     },
                     child: const Icon(Icons.close),
@@ -99,6 +113,7 @@ class _ClassesPageState extends State<ClassesPage> {
           },
         );
       },
+      // display the class information in a card
       child: ClassesWidget(
         userId: getCurrentUser()!.uid,
         classId: classObj.id,
@@ -113,6 +128,7 @@ class _ClassesPageState extends State<ClassesPage> {
   }
 }
 
+// format the date and time
 String formatDateTime(String dateTimeString) {
   DateTime dateTime = DateTime.parse(dateTimeString);
   DateFormat formatter = DateFormat('EEEE, MMMM d, y, h:mm a');

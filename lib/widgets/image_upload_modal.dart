@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// This widget is used to upload an image to firebase storage.
+
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -31,11 +37,13 @@ class _ImageUploadModalState extends State<ImageUploadModal> {
     });
 
     if (_imageFile != null) {
+      // upload the image to firebase storage
       final storage = FirebaseStorage.instance;
       final ref = storage.ref().child('images/${DateTime.now().toString()}');
       final uploadTask = ref.putFile(_imageFile!);
       final snapshot = await uploadTask.whenComplete(() => null);
       final downloadUrl = await snapshot.ref.getDownloadURL();
+
       setState(() {
         _imageUrl = downloadUrl;
         _isUploading = false;
@@ -59,6 +67,7 @@ class _ImageUploadModalState extends State<ImageUploadModal> {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
+            // if _isUploading is true, the button is disabled
             onPressed: _isUploading ? null : _uploadImage,
             child: _isUploading
                 ? const CircularProgressIndicator()

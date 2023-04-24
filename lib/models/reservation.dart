@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this class describes a reservation object and contains methods for creating and reading reservations from the database
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Reservation {
@@ -15,6 +21,7 @@ class Reservation {
     required this.userId,
   });
 
+  // convert a reservation object to a json object
   Map<String, dynamic> toJson() => {
         'equipmentReserved': equipmentReserved,
         'date': date,
@@ -22,6 +29,7 @@ class Reservation {
         'notes': notes,
       };
 
+  // create a Reservation object from a json object
   static Reservation fromJson(Map<String, dynamic> json) => Reservation(
         equipmentReserved: json['equipmentReserved'],
         date: json['date'],
@@ -30,12 +38,14 @@ class Reservation {
         userId: json['userId'],
       );
 
+  // read all reservations from the database
   static Stream<List<Reservation>> readReservations() =>
       FirebaseFirestore.instance.collection('reservations').snapshots().map(
           (snapshot) => snapshot.docs
               .map((doc) => Reservation.fromJson(doc.data()))
               .toList());
 
+  // create a new reservation in the database
   static Future<void> createReservation({
     required String equipmentReserved,
     required String date,

@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this class describes a post object and contains methods for creating and reading posts from the database
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post {
@@ -19,6 +25,7 @@ class Post {
         'dateTime': dateTime
       };
 
+  // create a Post object from a json object
   static Post fromJson(Map<String, dynamic> json) => Post(
         userId: json['userId'],
         content: json['content'],
@@ -26,12 +33,14 @@ class Post {
         dateTime: json['dateTime'],
       );
 
+  // read all posts from the database
   static Stream<List<Post>> readPosts() => FirebaseFirestore.instance
       .collection('posts')
       .snapshots()
       .map((snapshot) =>
           snapshot.docs.map((doc) => Post.fromJson(doc.data())).toList());
 
+  // create a new post in the database
   static Future createPost(
       {required String userId,
       required String content,

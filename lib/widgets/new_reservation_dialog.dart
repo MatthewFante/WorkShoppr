@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this widget is used to display a 'create reservation' dialog
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,24 +18,32 @@ class NewReservationDialog extends StatefulWidget {
 }
 
 class _NewReservationDialogState extends State<NewReservationDialog> {
+  // define the date format
   final dateFormat = DateFormat('MM/dd/yyyy');
   final _formKey = GlobalKey<FormState>();
 
+  // create controllers and variables for the form fields
   final _notesController = TextEditingController();
   var _selectedEquipment = '';
   var _selectedTimeSlot = '';
+
+  // set the default date to tomorrow
   String _selectedDate = DateTime.now().add(const Duration(days: 1)).toString();
 
+  // create lists for the dropdown menus
   List<String> _availableEquipment = [];
   List<String> _availableTimeSlots = [];
 
   Future<List<String>> getTimeslots() async {
+    // get the available timeslots from the database
     List<String> timeslots = [];
     List<String> reservedTimeslots = [];
 
+    // all timeslots defined in 'timeslots' collection
     QuerySnapshot snapshot1 =
         await FirebaseFirestore.instance.collection('timeslots').get();
 
+    // all timeslots reserved in 'reservations' collection for the selected date and equipment
     final snapshot2 = await FirebaseFirestore.instance
         .collection('reservations')
         .where('equipmentReserved', isEqualTo: _selectedEquipment)
@@ -37,22 +51,27 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
             isEqualTo: dateFormat.format(DateTime.parse(_selectedDate)))
         .get();
 
+    // add all timeslots to the list
     for (var doc in snapshot1.docs) {
       timeslots.add(doc['slot']);
     }
 
+    // add all reserved timeslots to the list
     for (var doc in snapshot2.docs) {
       reservedTimeslots.add(doc['timeSlot']);
     }
 
+    // remove all reserved timeslots from the list of available timeslots
     timeslots.removeWhere((element) => reservedTimeslots.contains(element));
 
+    // sort the list
     timeslots.sort();
     return timeslots;
   }
 
   @override
   void dispose() {
+    // dispose of the controllers
     _notesController.dispose();
     super.dispose();
   }
@@ -61,6 +80,7 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
   void initState() {
     super.initState();
 
+    // get the available equipment and timeslots
     getTimeslots().then((timeslots) {
       setState(() {
         _availableTimeSlots = timeslots;
@@ -75,12 +95,14 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
       });
     });
 
+    // set the default date to tomorrow
     setState(() {
       _selectedDate = DateTime.now().add(const Duration(days: 1)).toString();
     });
   }
 
   Stream<List<String>> getEquipmentList() {
+    // get the available equipment from the database
     return FirebaseFirestore.instance.collection('equipment').snapshots().map(
         (snapshot) =>
             snapshot.docs.map((doc) => doc['name'].toString()).toList()
@@ -90,13 +112,16 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
   @override
   Widget build(BuildContext context) {
     User? getCurrentUser() {
+      // get the current user
       final User? user = FirebaseAuth.instance.currentUser;
       return user;
     }
 
+    // get the current user's id
     final currentUserId = getCurrentUser()?.uid ?? 'Unknown';
 
     Future<bool> checkForConflictingReservationsEquipment() async {
+      // check for conflicting reservations for the selected equipment and date
       final snapshot1 = await FirebaseFirestore.instance
           .collection('reservations')
           .where('equipmentReserved', isEqualTo: _selectedEquipment)
@@ -115,6 +140,7 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
     }
 
     Future<bool> checkForConflictingReservationsUser() async {
+      // check for conflicting reservations for the selected user and date
       final snapshot1 = await FirebaseFirestore.instance
           .collection('reservations')
           .where('userId', isEqualTo: currentUserId)
@@ -148,11 +174,13 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
                       value: _selectedEquipment,
                       onChanged: (newValue) {
                         setState(() {
+                          // update the selected equipment
                           _selectedEquipment = newValue as String;
                         });
 
                         getTimeslots().then((timeslots) {
                           setState(() {
+                            // update the available timeslots and selected timeslot based on availability
                             _availableTimeSlots = timeslots;
                             _selectedTimeSlot = _availableTimeSlots[0];
                           });
@@ -173,6 +201,7 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
+                          // display the selected date
                           _selectedDate != ''
                               ? dateFormat.format(DateTime.parse(_selectedDate))
                               : 'Select a date',
@@ -197,6 +226,7 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
                                       });
 
                                       getTimeslots().then((timeslots) {
+                                        // update the available timeslots and selected timeslot based on availability
                                         setState(() {
                                           _availableTimeSlots = timeslots;
                                           _selectedTimeSlot =
@@ -258,13 +288,17 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
         ),
         ElevatedButton(
           onPressed: () async {
+            // check for conflicting reservations for the selected equipment and date
             final equipmentHasConflictingReservations =
                 await checkForConflictingReservationsEquipment();
 
+            // check for conflicting reservations for the selected user and date
             final userHasConflictingReservations =
                 await checkForConflictingReservationsUser();
 
+            // Validate the form
             if (_formKey.currentState!.validate()) {
+              // Prompt the user if the date they selected has passed
               if (DateTime.parse(_selectedDate).isBefore(DateTime.now())) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -273,6 +307,7 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
                 return;
               }
 
+              // Alert the user if the selected equipment is already reserved for the selected date and timeslot
               if (equipmentHasConflictingReservations) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -282,6 +317,7 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
                 return;
               }
 
+              // Alert the user if they already has a reservation for the selected date and timeslot
               if (userHasConflictingReservations) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -306,10 +342,11 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
                     content:
                         Text('$_selectedEquipment Reservation successful!')),
               );
-
+              // Close the dialog
               Navigator.pop(context);
             }
             setState(() {
+              // Reset the form
               _selectedEquipment = _availableEquipment[0];
               _selectedDate =
                   DateTime.now().add(const Duration(days: 1)).toString();
@@ -325,12 +362,14 @@ class _NewReservationDialogState extends State<NewReservationDialog> {
 }
 
 String? validateDate(String? value) {
+  // Check if the date is empty
   if (value == null || value.isEmpty) {
     return 'Please choose a date';
   }
   final selectedDate = DateTime.parse(value);
   final now = DateTime.now();
   if (selectedDate.isBefore(now)) {
+    // Check if the date is in the past
     return 'Please choose a date in the future';
   }
   return null;

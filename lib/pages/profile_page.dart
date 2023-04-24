@@ -1,5 +1,10 @@
-import 'package:flutter/material.dart';
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
 
+// this class describes the profile page which displays the user's profile information
+
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:workshoppr/authentication/fire_auth.dart';
 import 'package:workshoppr/pages/home_page.dart';

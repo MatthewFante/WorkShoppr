@@ -1,3 +1,9 @@
+// Matthew Fante
+// INFO-C342: Mobile Application Development
+// Spring 2023 Final Project
+
+// this widget is used to display posts in the feed page
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -38,15 +44,19 @@ class FeedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // allow for extra space in the feed for text if there is no image
     int allowedContentLength;
     imageUrl != '' ? allowedContentLength = 140 : allowedContentLength = 240;
 
+    // truncate the content if it is too long
     String truncatedContent = content.length > allowedContentLength
         ? '${content.substring(0, allowedContentLength)}...'
         : content;
 
+    // if the user is anonymous, display 'Anonymous' instead of an empty string
     String userIdFixed = (userId == '') ? 'Anonymous' : userId;
 
+    // format the date and time
     String dateTimeFormatted = formatDateTime(dateTime);
 
     return Container(
@@ -54,6 +64,7 @@ class FeedWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // if there is an image, display it
           imageUrl != '' ? _getPostImage(imageUrl) : Container(),
           const SizedBox(width: 10.0),
           Expanded(

@@ -66,7 +66,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '444483753037',
     projectId: 'workshoppr-a6b61',
     storageBucket: 'workshoppr-a6b61.appspot.com',
-    iosClientId: '444483753037-888hrbhjm67mdfi3nv011evr7pnf6buo.apps.googleusercontent.com',
+    iosClientId:
+        '444483753037-888hrbhjm67mdfi3nv011evr7pnf6buo.apps.googleusercontent.com',
     iosBundleId: 'com.example.workshoppr',
   );
 
@@ -76,7 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '444483753037',
     projectId: 'workshoppr-a6b61',
     storageBucket: 'workshoppr-a6b61.appspot.com',
-    iosClientId: '444483753037-888hrbhjm67mdfi3nv011evr7pnf6buo.apps.googleusercontent.com',
+    iosClientId:
+        '444483753037-888hrbhjm67mdfi3nv011evr7pnf6buo.apps.googleusercontent.com',
     iosBundleId: 'com.example.workshoppr',
   );
 }
